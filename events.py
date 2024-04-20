@@ -21,6 +21,7 @@ class Events(commands.Cog):
                 return
             #print(message.author) #prints author of the message
             #await message.channel.send('Запрещаю!')
+            print("мессадже детектед!!!")
         except Exception as error:
             print(error)
 

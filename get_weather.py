@@ -12,7 +12,7 @@ def forecast(city, count):
     reqest = requests.get(url)
 
     if reqest.status_code == 404:
-        return 'Город указан не верно! Его можно изменить командой: /-измени'
+        return 'Город указан не верно! Его можно изменить командой: /измени'
     else:
         weather_data = reqest.json()['list']
         days = [weather_data[0], weather_data[7], weather_data[15], weather_data[23], weather_data[31]]
@@ -27,7 +27,7 @@ def current(city):
     reqest = requests.get(url)
 
     if reqest.status_code == 404:
-        return 'Город указан не верно! Его можно изменить командой: #!place'
+        return 'Город указан неверно! Его можно изменить командой: #!place'
     else:
         weather_data = reqest.json()
         return get_and_print_weather(weather_data, city, str(datetime.datetime.now()).split()[0])

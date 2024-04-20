@@ -25,6 +25,10 @@ class Analyzer(commands.Cog):
         'preferredquality': '192',
                           }],
         }
+        self.guilds = None
+        print("inited")
+
+
     @commands.command(name='измени')
     async def change(self, ctx,  *, message:str):
         key_word = message.split(' на ')[0]
@@ -36,7 +40,8 @@ class Analyzer(commands.Cog):
         else:
             await ctx.send(f'Как мне это исрользовать?'
                            f'вызывай /-помоги, чтобы узнать, что можно поменять!')
-        
+
+
     @commands.command(name='напиши')
     async def write(self, ctx, line, count):
         try:
@@ -44,6 +49,7 @@ class Analyzer(commands.Cog):
                 await ctx.send(line)
         except:
             await ctx.send(random.choice(self.list_of_the_unclear_answers))
+
 
     @commands.command(name='зайди')
     async def join(self, ctx):
@@ -57,12 +63,14 @@ class Analyzer(commands.Cog):
             print(error)
             await ctx.send(random.choice(self.list_of_the_unclear_answers))
 
+
     @commands.command(aliases=['уходи', 'кыш'])
     async def leave(self, ctx):
         try:
             await ctx.voice_client.disconnect()
         except:
             await ctx.send('меня уже выгнали!')
+
 
     @commands.command(name='запусти')
     async def play_song(self, ctx, url):
@@ -81,6 +89,7 @@ class Analyzer(commands.Cog):
             print(error)
             await ctx.send('я этого не знаю!')
 
+
     @commands.command(name='хватит')
     async def end_song(self, ctx):
         try:
@@ -91,9 +100,10 @@ class Analyzer(commands.Cog):
                 await ctx.send('Это не я. Отстань!')
         except Exception as error:
             print(error)
-            
+
+
     @commands.command(name='погода')
-    async def end_song(self, ctx, *, message:str):
+    async def weather(self, ctx, *, message:str):
         if 'сегодня' in message.lower():
             await ctx.send(get_weather.current(self.city))
         elif 'завтра' in message.lower():
@@ -105,4 +115,51 @@ class Analyzer(commands.Cog):
             await ctx.send(get_weather.forecast(self.city, 5))
         else:
             await ctx.send(random.choice(self.list_of_the_unclear_answers))
+
+    @commands.command(name='найди', description="Ищет пользователя по имени")
+    async def get_user(self, ctx, user_name: str):
+        print("is this true?")
+        channel = commands.Bot.get_all_members(self.bot)
+        found = False
+        for i in channel:
+            if user_name in i.name:
+                await ctx.send(f"Пользователь {i.name}, идентификатор {i.id}")
+                found = True
+                break
+        if not found:
+            await ctx.send(f"Ничего не нашел :sob:")
+
+    @commands.command(name='пользователи', description="Печатает всех пользователей на сервере")
+    async def get_users(self, ctx):
+        print("is this true?")
+        channel = commands.Bot.get_all_members(self.bot)
+        if not channel:
+            await ctx.send(f"Ничего не нашел :sob:")
+            return
+        for i in channel:
+            await ctx.send(f"Пользователь {i.name}, идентификатор {i.id}")
+
+    @commands.command(name='напиши-секрет', description="пока что ничего не находит смх")
+    async def secret_dm(self, ctx, user_id, *message):
+        """пока что ничего не находит смх"""
+        try:
+            user_id = int(user_id)
+        except Exception:
+            channel = commands.Bot.get_all_members(self.bot)
+            found = False
+            for i in channel:
+                if user_id in i.name:
+                    user_id = i.id
+                    found = True
+                    break
+            if not found:
+                await ctx.send(f"Ничего не нашел :sob: \nНе смог отправить сообщение")
+                await ctx.message.delete()
+        user = commands.Bot.get_user(self.bot, user_id)
+        dm = await user.create_dm()
+        dm.recipient = user
+        await dm.send(f"Аноним: {' '.join(message)}")
+        await ctx.message.delete()
+        await ctx.send(f"Сообщение '{' '.join(message)}' отправлено адресату {user.name}!")
+
 
