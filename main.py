@@ -275,8 +275,10 @@ class Events(commands.Cog):
 
     @commands.command(name='запусти')
     async def play_song(self, ctx, *url):
+        linked = True
         try:
             if not url[0].startswith("https://"):
+                linked = False
                 url = get_youtube_video.get_video(" ".join(url))
 
             if self.voice_client.is_playing():
@@ -284,8 +286,13 @@ class Events(commands.Cog):
 
             await ctx.send(get_data.get_random_soon_words())
 
+            print(url)
+
             with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
-                song_info = ydl.extract_info(url[0], download=False)
+                if linked:
+                    song_info = ydl.extract_info(url[0], download=False)
+                else:
+                    song_info = ydl.extract_info(url, download=False)
 
             self.voice_client.play(
                 discord.FFmpegPCMAudio(song_info["url"], executable=f"{self.dir}\\data\\ffmpeg\\bin\\ffmpeg.exe"))
