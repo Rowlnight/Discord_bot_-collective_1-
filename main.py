@@ -13,9 +13,7 @@ from events import Events
 
 args = sys.argv
 
-# kleiner token:
-ANOTHER_TOKEN = args[1]
-TOKEN = args[2]
+TOKEN = args[1]
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)

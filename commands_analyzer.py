@@ -13,6 +13,8 @@ class Analyzer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.list_of_the_unclear_answers = get_data.get_list_of_the_unclear_answers()
+        self.active_channel = None
+        self.previous_channel = None
         self.answer_vc_error = get_data.VS_error()
         self.commands_object = ['']
         self.city = 'Москва'
@@ -37,9 +39,20 @@ class Analyzer(commands.Cog):
         if key_word.lower() == 'город':
             self.city = value
             await ctx.send(f'Установлен город {value}')
+            """elif key_word.lower() == 'канал':
+                self.previous_channel = self.active_channel
+                self.active_channel = list(filter(lambda x: value in x.name and isinstance(x, 
+                                                                                           discord.channel.TextChannel),
+                                                    commands.Bot.get_all_channels(self.bot)))
+                if self.active_channel:
+                    await ctx.send(f'Установлен активный канал: {self.active_channel[0].name} '
+                                   f'\nБольше не работаю везде :/')
+                else:
+                    await ctx.send(f'Не могу найти такой канал! Отстань!')""" # лучше настроить канал бота через discord
+
         else:
-            await ctx.send(f'Как мне это исрользовать?'
-                           f'вызывай /-помоги, чтобы узнать, что можно поменять!')
+            await ctx.send(f'Как мне это использовать? Кажется, в команде была допущена ошибка!'
+                           f'Вызывай /-помоги, чтобы узнать, что можно поменять!')
 
 
     @commands.command(name='напиши')
@@ -139,7 +152,7 @@ class Analyzer(commands.Cog):
         for i in channel:
             await ctx.send(f"Пользователь {i.name}, идентификатор {i.id}")
 
-    @commands.command(name='напиши-секрет', description="пока что ничего не находит смх")
+    @commands.command(name='напиши-секрет', description="Анонимно пишет в личку пользователя сообщение")
     async def secret_dm(self, ctx, user_id, *message):
         """пока что ничего не находит смх"""
         try:
@@ -162,4 +175,11 @@ class Analyzer(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"Сообщение '{' '.join(message)}' отправлено адресату {user.name}!")
 
+    @commands.command(name='аватарка', description="Получи аватарку пользователя!")
+    async def get_avatar(self, ctx, user):
+        user = get_data.find_user(self.bot, user)
+        if user:
+            await ctx.send(f"Вот: {user.display_avatar.url}")
+        else:
+            await ctx.send(f"Нет такого пользователя! Бесишь!")
 

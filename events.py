@@ -11,7 +11,7 @@ class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.dir = os.path.abspath(os.curdir)
-        self.obscene_words = {}
+        self.forbidden_words = {}
         self.all_channel = []
 
     @commands.Cog.listener()
@@ -21,7 +21,6 @@ class Events(commands.Cog):
                 return
             #print(message.author) #prints author of the message
             #await message.channel.send('Запрещаю!')
-            print("мессадже детектед!!!")
         except Exception as error:
             print(error)
 
