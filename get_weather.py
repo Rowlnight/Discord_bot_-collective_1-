@@ -1,4 +1,6 @@
-import requests, pprint, datetime
+import requests, pprint, datetime, os
+
+dir = os.path.abspath(os.curdir)
 
 def degToCompass(num):
     val = int((num/22.5)+.5)
@@ -8,7 +10,8 @@ def degToCompass(num):
     return arr[(val % 16)]
 
 def forecast(city, count):
-    url = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+    with open(dir + '\\data\\links\\weather.txt', 'r', encoding="utf-8") as file:
+        url = file.read().split('\n')[1].replace('XXXX', city)
     reqest = requests.get(url)
 
     if reqest.status_code == 404:
@@ -23,7 +26,8 @@ def forecast(city, count):
         return result
 
 def current(city):
-    url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+    with open(dir + '\\data\\links\\weather.txt', 'r', encoding="utf-8") as file:
+        url = file.read().split('\n')[0].replace('XXXX', city)
     reqest = requests.get(url)
 
     if reqest.status_code == 404:
@@ -38,7 +42,7 @@ def get_and_print_weather(weather_data, city, date):
     wind_speed = weather_data['wind']['speed']
     wind_direction = degToCompass(weather_data['wind']['deg'])
     humidity = weather_data['main']['humidity']
-    pressure = weather_data['main']['pressure']
+    pressure = str(round(int(weather_data['main']['pressure']) * 0.75024, 0)).split('.')[0]
    
     return (f'Погода в городе {city} на {date}\n'
             f'Температура: {temperature} °C, ощущается как {temperature_feels} °C\n'
