@@ -12,7 +12,8 @@ import get_youtube_video
 
 dir = os.path.abspath(os.curdir)
 
-TOKEN = sys.argv[1]
+with open(dir + '\\data\\TOKEN.txt', 'r', encoding="utf-8") as file:
+    TOKEN = file.read()
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -165,6 +166,14 @@ class Events(commands.Cog):
             print(error)
 
 ##############################################################################################################################################################################################
+    @commands.command(name='помоги')
+    async def help(self, ctx):
+        data = get_data.get_data_for_help()
+        print(len(data[0]), len(data[1]))
+        await ctx.send(f'------------------------------------------------------------------------\n')
+        await ctx.send(f'{data[0]}')
+        await ctx.send(f'{data[1]}')
+        await ctx.send(f'------------------------------------------------------------------------')
     
     @commands.command(name='пиши')
     async def change_text_channel(self, ctx, place):
@@ -206,7 +215,7 @@ class Events(commands.Cog):
             await ctx.send(line)
             await asyncio.sleep(1)
 
-    @commands.command(aliases=['найди', 'поищи', 'тоищи', 'напиши']) 
+    @commands.command(aliases=['найди', 'поищи', 'покажи', 'напиши']) 
     async def write(self, ctx, *, message:str):
         try:
             if message in ['цитату', 'факт']:
@@ -343,6 +352,7 @@ class Events(commands.Cog):
             if not found:
                 await ctx.send(f"Ничего не нашел :sob: \nНе смог отправить сообщение")
                 await ctx.message.delete()
+                
         user = commands.Bot.get_user(self.bot, user_id)
         dm = await user.create_dm()
         dm.recipient = user
